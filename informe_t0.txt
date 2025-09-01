@@ -1,0 +1,21 @@
+Informe Tarea 0 – Sistemas Operativos
+
+Tuve varios problemas al principio para instalar las herramientas.
+Intenté instalar QEMU y el compilador RISC-V con Homebrew, pero no funcionó por errores de versión.
+Al final lo solucioné usando xPack con npm y logré instalar QEMU y riscv-none-elf-gcc.
+
+Después cloné xv6-riscv, creé mi rama y traté de compilar.
+Al principio fallaba por instrucciones que no reconocía.
+La solución fue agregar extensiones en las banderas de compilación (-march=rv64gc_zicsr_zifencei -mabi=lp64).
+Con eso compiló y pude correr xv6 en QEMU.
+
+Ya en xv6 probé comandos básicos:
+- ls (listar archivos)
+- echo "Hola xv6" (imprimir texto)
+- cat README (ver contenido)
+- cat README | grep xv6 (filtrar líneas con xv6)
+
+Todos funcionaron bien y tomé las capturas pedidas.
+
+En resumen: logré instalar, compilar y ejecutar xv6, además de probar los comandos básicos.
+Cumplí con lo solicitado en la tarea.
