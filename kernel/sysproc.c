@@ -105,3 +105,27 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+// T1: implementaciones
+uint64
+sys_getppid(void) {
+  struct proc *p = myproc();
+  if (p->parent)
+    return p->parent->pid;
+  return -1;
+}
+
+uint64
+sys_getancestor(void) {
+  int n = 0;
+  // En xv6, argint no retorna un int; solo llena la variable.
+  argint(0, &n);
+  if (n < 0) return -1;
+
+  struct proc *p = myproc();
+  while (n-- > 0) {
+    if (p->parent == 0) return -1;
+    p = p->parent;
+  }
+  return p->pid;
+}

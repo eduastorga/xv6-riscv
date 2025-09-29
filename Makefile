@@ -123,6 +123,7 @@ mkfs/mkfs: mkfs/mkfs.c $K/fs.h $K/param.h
 .PRECIOUS: %.o
 
 UPROGS=\
+	user/_yosoytupadre\
 	$U/_cat\
 	$U/_echo\
 	$U/_forktest\
@@ -190,3 +191,4 @@ check-qemu-version:
 		echo "ERROR: Need qemu version >= $(MIN_QEMU_VERSION)"; \
 		exit 1; \
 	fi
+
