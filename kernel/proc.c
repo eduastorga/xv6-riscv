@@ -124,6 +124,9 @@ allocproc(void)
 found:
   p->pid = allocpid();
   p->state = USED;
+  // --- T2: Lottery Scheduling ---
+  p->tickets = 10;      // cada proceso parte con 10 tickets
+  p->cpu_slices = 0;    // cuántas veces fue elegido
 
   // Allocate a trapframe page.
   if((p->trapframe = (struct trapframe *)kalloc()) == 0){
