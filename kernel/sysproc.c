@@ -129,3 +129,48 @@ sys_getancestor(void) {
   }
   return p->pid;
 }
+
+// --- T2: Lottery Scheduling ---
+#include "param.h"
+#include "types.h"
+#include "riscv.h"
+#include "defs.h"
+#include "proc.h"
+
+// syscall: settickets(int n)
+uint64
+sys_settickets(void)
+{
+  int n;
+  if(argint(0, &n) < 0)
+    return -1;  // error si no se puede leer argumento
+
+  if(n < 1)
+    return -1;  // no se aceptan tickets menores a 1
+
+  struct proc *p = myproc();
+  acquire(&p->lock);
+  p->tickets = n;  // actualiza la cantidad de tickets
+  release(&p->lock);
+
+  return 0;
+}
+
+// syscall: getpinfo(int *out)
+uint64
+sys_getpinfo(void)
+{
+  uint64 user_addr; // dirección de memoria en espacio de usuario
+
+  if(argaddr(0, &user_addr) < 0)
+    return -1;
+
+  struct proc *p = myproc();
+  int value = p->cpu_slices;  // cuántas veces fue elegido por el scheduler
+
+  if(copyout(p->pagetable, user_addr, (char *)&value, sizeof(int)) < 0)
+    return -1;
+
+  return 0;
+}
+

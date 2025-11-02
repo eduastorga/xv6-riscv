@@ -50,3 +50,9 @@ void free(void*);
 // T1: prototipos user-space
 int getppid(void);
 int getancestor(int);
+
+
+// --- T2: Lottery Scheduling ---
+int settickets(int n);
+int getpinfo(int *out);
+

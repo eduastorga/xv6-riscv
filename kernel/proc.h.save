@@ -104,8 +104,4 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
-  // --- T2: Lottery Scheduling ---
-  int tickets;                 // cantidad de tickets del proceso (>=1)
-  int cpu_slices;              // cuántas veces fue elegido por el scheduler
-  struct proc *parent;         // Parent process
 };

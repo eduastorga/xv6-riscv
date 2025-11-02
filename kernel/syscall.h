@@ -25,3 +25,7 @@
 #define SYS_getancestor  23
 // T1
 #define SYS_getancest
+// --- T2: Lottery Scheduling ---
+#define SYS_settickets 24
+#define SYS_getpinfo   25
+
