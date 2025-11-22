@@ -336,6 +336,76 @@ uvmclear(pagetable_t pagetable, uint64 va)
   *pte &= ~PTE_U;
 }
 
+// -----------------------------------------------------------------------------
+// DESHABILITAR LECTURA (mrdprotect)
+// -----------------------------------------------------------------------------
+int
+mrdprotect(void *addr, int len)
+{
+  pagetable_t pagetable = myproc()->pagetable;
+
+  if(len <= 0)
+    return -1;
+
+  uint64 va = (uint64)addr;
+  
+  // Debe estar alineada a página
+  if(va % PGSIZE != 0)
+    return -1;
+
+  // Iterar sobre cada página
+  for(int i = 0; i < len; i++){
+    pte_t *pte = walk(pagetable, va + i*PGSIZE, 0);
+    if(pte == 0)
+      return -1;  // Página no mapeada
+
+    if((*pte & PTE_V) == 0)
+      return -1;  // No válida
+
+    // limpiar permiso de lectura (PTE_R)
+    *pte &= ~PTE_R;
+  }
+
+  // invlidar TLB
+  sfence_vma();
+
+  return 0;
+}
+
+// -----------------------------------------------------------------------------
+// REVERTIR PROTECCIÓN (munrdprotect)
+// -----------------------------------------------------------------------------
+int
+munrdprotect(void *addr, int len)
+{
+  pagetable_t pagetable = myproc()->pagetable;
+
+  if(len <= 0)
+    return -1;
+
+  uint64 va = (uint64)addr;
+  
+  if(va % PGSIZE != 0)
+    return -1;
+
+  for(int i = 0; i < len; i++){
+    pte_t *pte = walk(pagetable, va + i*PGSIZE, 0);
+    if(pte == 0)
+      return -1;
+
+    if((*pte & PTE_V) == 0)
+      return -1;
+
+    // activar lectura
+    *pte |= PTE_R;
+  }
+
+  sfence_vma();
+  
+  return 0;
+}
+
+
 // Copy from kernel to user.
 // Copy len bytes from src to virtual address dstva in a given page table.
 // Return 0 on success, -1 on error.
@@ -484,3 +554,6 @@ ismapped(pagetable_t pagetable, uint64 va)
   }
   return 0;
 }
+
+// Marca páginas como "no lectura" (quita PTE_R pero mantiene otros permisos).
+

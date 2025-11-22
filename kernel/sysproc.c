@@ -105,3 +105,43 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+uint64
+sys_mrdprotect(void)
+{
+    uint64 addr;
+    int len;
+
+    argaddr(0, &addr);
+    argint(1, &len);
+
+    // Validaciones
+    if (len <= 0)
+        return -1;
+
+    if (addr % PGSIZE != 0)
+        return -1;
+
+    // Llamar al kernel real (vm.c)
+    return mrdprotect((void*)addr, len);
+}
+
+
+uint64
+sys_munrdprotect(void)
+{
+    uint64 addr;
+    int len;
+
+    argaddr(0, &addr);
+    argint(1, &len);
+
+    if (len <= 0)
+        return -1;
+
+    if (addr % PGSIZE != 0)
+        return -1;
+
+    return munrdprotect((void*)addr, len);
+}
+
